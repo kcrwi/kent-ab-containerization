@@ -1,0 +1,45 @@
+# This is a template one can update to have a manifest used in a cluster hosted on a cloud.
+# OBSERVE, it is NOT usable in its default state!
+# TODO: Push image to cloud registry first
+# TODO: Ensure the cloud-provider of choice lets us integrate a load-balancer?
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-hostname
+spec:
+  replicas: 2  
+  selector:
+    matchLabels:
+      app: node-hostname
+  template:
+    metadata:
+      labels:
+        app: node-hostname
+    spec:
+      containers:
+      - name: node-hostname
+        # TODO: Replace with your cloud registry URL
+        image: <REGISTRY_URL>/node-hostname:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-hostname
+spec:
+  selector:
+    app: node-hostname
+  ports:
+  - port: 80
+    targetPort: 3000
+  # https://kubernetes.io/docs/concepts/services-networking/service/
+  # Whatever cloud provider we have should be able to give us a load-balancer to integrate with
+  # This does NOT work when running a cluster locally with 'minikube'
+  type: LoadBalancer

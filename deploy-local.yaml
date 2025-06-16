@@ -1,7 +1,16 @@
+# This is a manifest that's to be used in a local cluster running something like 'minikube'. 
+# It's based on a local image we have to load into our environment manually, based on our dockerfile.
+# - Build the image using Docker
+#   $ docker build -t node_hostname:latest . 
+# - Load it into the minikube environment
+#   $ minikube image load node_hostname:latest
+# - Minikube can now be used to 'apply' this manifest, thus creating our resourses.
+#   $ kubectl apply -f deploy-local.yaml
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  # Apparently '_' isn't allowed...
+  # Apparently '_' isn't allowed in resource names...
   name: node-hostname
 spec:
   selector:
@@ -42,3 +51,5 @@ spec:
   # https://kubernetes.io/docs/concepts/services-networking/service/
   # Should let us access externally from a single static port?
   type: NodePort
+  # Can use this service to see app in browser:
+  # minikube service node-hostname --url
