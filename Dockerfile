@@ -2,9 +2,13 @@
 
 FROM node:lts-alpine
 WORKDIR /app
-# 'source' 'destination'
-COPY . .
+
+# Paired with '.dockerignore' we don't run the risk of moving local (possibly incompatible) modules
+COPY package-lock.json .
+COPY package.json .
 RUN npm install --production
+
+COPY . .
 
 EXPOSE 3000 
 
