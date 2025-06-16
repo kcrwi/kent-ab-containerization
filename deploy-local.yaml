@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Apparently '_' isn't allowed...
+  name: node-hostname
+spec:
+  selector:
+    matchLabels:
+      app: node-hostname
+  # TODO: Is this where we allow for better CI of updates?
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: node-hostname
+    spec:
+      containers:
+      - name: node-hostname
+        image: node_hostname:latest
+        # Since we're using minikube locally
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+
+# Might be better to separate into two manifests, but this app is stateless and small
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-hostname
+spec:
+  selector:
+    app: node-hostname
+  ports:
+  - port: 80
+    targetPort: 3000
+  # https://kubernetes.io/docs/concepts/services-networking/service/
+  # Should let us access externally from a single static port?
+  type: NodePort
