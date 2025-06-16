@@ -56,3 +56,5 @@ curl <HTTP URL from previous command>
     - SSL Certificate?
     - Ingress control like nginx?
 - Implement a CI pipeline to allow for better testing, building, deployment.
+- Update the repo permissions. It's currently public, which is likely not ideal for the usecase. 
+    - Transfer over ownership to 'Kent AB', and make it invite-only.
